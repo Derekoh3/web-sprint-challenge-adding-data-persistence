@@ -1,25 +1,20 @@
 // build your `Resource` model here
-const express = require("express");
-const Project = require("./model");
+const db = require("../../data/dbConfig");
 
-const router = express.Router();
+const getAll = () => {
+  return db("resources");
+};
 
-router.get("/", async (req, res, next) => {
-  try {
-    const projects = await Project.getAll();
-    res.status(200).json(projects);
-  } catch (err) {
-    next(nerr);
-  }
-});
+const getById = (id) => {
+  return db("resources").where("resource_id", id).first();
+};
 
-router.post("/", async (req, res, next) => {
-  try {
-    const response = await Project.insert(req.body);
-    res.status(201).json(response);
-  } catch (err) {
-    next(err);
-  }
-});
+const insert = async (resource) => {
+  const newId = await db("resources").insert(resource);
+  return getById(newId);
+};
 
-module.exports = router;
+module.exports = {
+  getAll,
+  insert,
+};
